@@ -19,6 +19,7 @@
 #import "FBSDKErrorConfiguration.h"
 
 #import "FBSDKCoreKit+Internal.h"
+
 #import "FBSDKErrorRecoveryConfiguration.h"
 
 static NSString *const kErrorCategoryOther = @"other";
@@ -150,7 +151,9 @@ static NSString *const kErrorCategoryLogin = @"login";
 
 - (id)initWithCoder:(NSCoder *)decoder
 {
-  NSDictionary *configurationDictionary = [decoder decodeObjectOfClass:[NSDictionary class] forKey:FBSDKERRORCONFIGURATION_DICTIONARY_KEY];
+  NSSet *classes = [[NSSet alloc] initWithObjects:[NSDictionary class], [FBSDKErrorRecoveryConfiguration class], nil];
+  NSDictionary *configurationDictionary = [decoder decodeObjectOfClasses:classes
+                                                                  forKey:FBSDKERRORCONFIGURATION_DICTIONARY_KEY];
   return [self initWithDictionary:configurationDictionary];
 }
 

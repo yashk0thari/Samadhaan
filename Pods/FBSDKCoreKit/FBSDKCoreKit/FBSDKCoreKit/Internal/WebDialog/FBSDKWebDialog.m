@@ -16,6 +16,10 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+#import "TargetConditionals.h"
+
+#if !TARGET_OS_TV
+
 #import "FBSDKWebDialog.h"
 
 #import "FBSDKAccessToken.h"
@@ -25,9 +29,12 @@
 #import "FBSDKSettings.h"
 #import "FBSDKTypeUtility.h"
 #import "FBSDKWebDialogView.h"
+#import "FBSDKInternalUtility.h"
 
 #define FBSDK_WEB_DIALOG_SHOW_ANIMATION_DURATION 0.2
 #define FBSDK_WEB_DIALOG_DISMISS_ANIMATION_DURATION 0.3
+
+typedef void (^FBSDKBoolBlock)(BOOL finished);
 
 static FBSDKWebDialog *g_currentDialog = nil;
 
@@ -90,7 +97,8 @@ static FBSDKWebDialog *g_currentDialog = nil;
     return NO;
   }
 
-  _dialogView = [[FBSDKWebDialogView alloc] initWithFrame:window.screen.bounds];
+  CGRect frame = [self _applicationFrameForOrientation];
+  _dialogView = [[FBSDKWebDialogView alloc] initWithFrame:frame];
 
   _dialogView.delegate = self;
   [_dialogView loadURL:URL];
@@ -215,10 +223,10 @@ static FBSDKWebDialog *g_currentDialog = nil;
   parameters[@"display"] = @"touch";
   parameters[@"sdk"] = [NSString stringWithFormat:@"ios-%@", [FBSDKSettings sdkVersion]];
   parameters[@"redirect_uri"] = @"fbconnect://success";
-  [FBSDKInternalUtility dictionary:parameters setObject:[FBSDKSettings appID] forKey:@"app_id"];
-  [FBSDKInternalUtility dictionary:parameters
-                         setObject:[FBSDKAccessToken currentAccessToken].tokenString
-                            forKey:@"access_token"];
+  [FBSDKBasicUtility dictionary:parameters setObject:[FBSDKSettings appID] forKey:@"app_id"];
+  [FBSDKBasicUtility dictionary:parameters
+                      setObject:[FBSDKAccessToken currentAccessToken].tokenString
+                         forKey:@"access_token"];
   [parameters addEntriesFromDictionary:self.parameters];
   return [FBSDKInternalUtility facebookURLWithHostPrefix:@"m"
                                                     path:[@"/dialog/" stringByAppendingString:self.name]
@@ -243,7 +251,6 @@ static FBSDKWebDialog *g_currentDialog = nil;
   _backgroundView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
   _backgroundView.backgroundColor = [UIColor colorWithWhite:0.3 alpha:0.8];
   [window addSubview:_backgroundView];
-
   [window addSubview:_dialogView];
 
   [_dialogView becomeFirstResponder]; // dismisses the keyboard if it there was another first responder with it
@@ -261,7 +268,7 @@ static FBSDKWebDialog *g_currentDialog = nil;
   // iOS 8 simply adjusts the application frame to adapt to the current orientation and deprecated the concept of
   // interface orientations
   if ([FBSDKInternalUtility shouldManuallyAdjustOrientation]) {
-    switch ([UIApplication sharedApplication].statusBarOrientation) {
+    switch (FBSDKInternalUtility.statusBarOrientation) {
       case UIInterfaceOrientationLandscapeLeft:
         return CGAffineTransformMakeRotation(M_PI * 1.5);
       case UIInterfaceOrientationLandscapeRight:
@@ -280,8 +287,24 @@ static FBSDKWebDialog *g_currentDialog = nil;
 - (CGRect)_applicationFrameForOrientation
 {
   CGRect applicationFrame = _dialogView.window.screen.bounds;
+
+  UIEdgeInsets insets = UIEdgeInsetsZero;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_11_0
+  if (@available(iOS 11.0, *)) {
+    insets = _dialogView.window.safeAreaInsets;
+  }
+#endif
+
+  if (insets.top == 0.0) {
+    insets.top = [[UIApplication sharedApplication] statusBarFrame].size.height;
+  }
+  applicationFrame.origin.x += insets.left;
+  applicationFrame.origin.y += insets.top;
+  applicationFrame.size.width -= insets.left + insets.right;
+  applicationFrame.size.height -= insets.top + insets.bottom;
+
   if ([FBSDKInternalUtility shouldManuallyAdjustOrientation]) {
-    switch ([UIApplication sharedApplication].statusBarOrientation) {
+    switch (FBSDKInternalUtility.statusBarOrientation) {
       case UIInterfaceOrientationLandscapeLeft:
       case UIInterfaceOrientationLandscapeRight:
         return CGRectMake(0, 0, CGRectGetHeight(applicationFrame), CGRectGetWidth(applicationFrame));
@@ -298,7 +321,7 @@ static FBSDKWebDialog *g_currentDialog = nil;
 - (void)_updateViewsWithScale:(CGFloat)scale
                         alpha:(CGFloat)alpha
             animationDuration:(CFTimeInterval)animationDuration
-                   completion:(void(^)(BOOL finished))completion
+                   completion:(FBSDKBoolBlock)completion
 {
   CGAffineTransform transform;
   CGRect applicationFrame = [self _applicationFrameForOrientation];
@@ -311,10 +334,9 @@ static FBSDKWebDialog *g_currentDialog = nil;
   transform = CGAffineTransformScale([self _transformForOrientation], scale, scale);
   void(^updateBlock)(void) = ^{
     self->_dialogView.transform = transform;
-
-    CGRect mainFrame = self->_dialogView.window.screen.bounds;
-    self->_dialogView.center = CGPointMake(CGRectGetMidX(mainFrame),
-                                     CGRectGetMidY(mainFrame));
+    self->_dialogView.center = CGPointMake(CGRectGetMidX(applicationFrame),
+                                     CGRectGetMidY(applicationFrame));
+    self->_dialogView.alpha = alpha;
     self->_backgroundView.alpha = alpha;
   };
   if (animationDuration == 0.0) {
@@ -325,3 +347,5 @@ static FBSDKWebDialog *g_currentDialog = nil;
 }
 
 @end
+
+#endif
