@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -43,12 +43,12 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Please allow photo usage.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>We need access to your microphone</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>We need your location to obtain your weather conditions</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We need your location to obtain your weather conditions</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We need access to your microphone</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Please allow photo usage.</string>
 	<key>UIBackgroundModes</key>

@@ -13,10 +13,10 @@ import FirebaseAuth
 import SVProgressHUD
 
 class WelcomeViewController: UIViewController, GIDSignInDelegate {
-    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
-        weak var googleLoginView: GIDSignInButton!
-        
-        func viewDidLoad() {
+    
+    @IBOutlet weak var googleLoginView: GIDSignInButton!
+    
+    override func viewDidLoad() {
             super.viewDidLoad()
 
             SVProgressHUD.dismiss()
@@ -32,9 +32,10 @@ class WelcomeViewController: UIViewController, GIDSignInDelegate {
             }
             
         }
-    }
     
-
+    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
+        
+    }
 
 
 }
