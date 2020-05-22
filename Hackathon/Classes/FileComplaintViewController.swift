@@ -240,11 +240,14 @@ class FileComplaintViewController: UIViewController {
 
 extension FileComplaintViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+// Local variable inserted by Swift 4.2 migrator.
+let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
+
         
         SVProgressHUD.show()
         
-        guard let mediaType: String = info[UIImagePickerControllerMediaType] as? String else {
+        guard let mediaType: String = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.mediaType)] as? String else {
             picker.dismiss(animated: true, completion: nil)
             return
         }
@@ -253,12 +256,12 @@ extension FileComplaintViewController: UIImagePickerControllerDelegate, UINaviga
             
             media_type = "Image"
             //User has selected an image
-            if let originalImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-                let imageData = UIImageJPEGRepresentation(originalImage, 0.5)
+            if let originalImage = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.originalImage)] as? UIImage {
+                let imageData = originalImage.jpegData(compressionQuality: 0.5)
                 uploadImageToFirebaseStorage(data: imageData as! NSData)
             }
             
-            guard let image = info[UIImagePickerControllerOriginalImage] as? UIImage else {
+            guard let image = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.originalImage)] as? UIImage else {
                 return
             }
             CameraImageView.image = image
@@ -267,7 +270,7 @@ extension FileComplaintViewController: UIImagePickerControllerDelegate, UINaviga
             
             media_type = "Movie"
             //User has selected an image
-            if let movieURL = info[UIImagePickerControllerMediaURL] as? NSURL {
+            if let movieURL = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.mediaURL)] as? NSURL {
                 uploadMovieToFirebaseStorage(url: movieURL)
             }
         }
@@ -323,3 +326,13 @@ extension FileComplaintViewController: UITextViewDelegate {
     }
 }
 
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
+	return input.rawValue
+}

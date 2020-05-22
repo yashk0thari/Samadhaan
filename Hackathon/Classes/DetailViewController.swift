@@ -43,8 +43,8 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var videoButtonView: UIButton!
     @IBOutlet weak var concernsView: UIView!
     
-    let attrs = [NSAttributedStringKey.font : UIFont.boldSystemFont(ofSize: 19)]
-    let attrs1 = [NSAttributedStringKey.font : UIFont(name: "Helvetica", size: 19.0)!]
+    let attrs = [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 19)]
+    let attrs1 = [NSAttributedString.Key.font : UIFont(name: "Helvetica", size: 19.0)!]
     
     var videoURL = ""
     
