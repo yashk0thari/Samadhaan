@@ -52,8 +52,8 @@ class WelcomeViewController: UIViewController, GIDSignInDelegate, ASAuthorizatio
         NSLayoutConstraint.activate([
             
             appleButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            appleButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30),
-            appleButton.widthAnchor.constraint(equalToConstant: 300),
+            appleButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -0.15*view.frame.height),
+            appleButton.widthAnchor.constraint(equalToConstant: view.frame.width-40),
             appleButton.heightAnchor.constraint(equalToConstant: 40)
         ])
     }
