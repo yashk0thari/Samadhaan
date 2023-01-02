@@ -41,7 +41,7 @@ class FileComplaintViewController: UIViewController {
 
         // For Camera
         imagePicker.delegate = self
-        imagePicker.sourceType = .photoLibrary //This need to be changed to ".camera" from ".photoLibrary"
+        imagePicker.sourceType = .camera //This need to be changed to ".camera" from ".photoLibrary"
         
         imagePicker.mediaTypes = [kUTTypeImage as String, kUTTypeMovie as String]
         // Optimize for video also then do this [kUTTypeImage as String, kUTTypeMovie as String]
@@ -124,7 +124,7 @@ class FileComplaintViewController: UIViewController {
                             print("Error adding document: \(err)")
                         } else {
                             SVProgressHUD.dismiss()
-                            let alert = UIAlertController(title: "Success!", message: "Concern is shown.", preferredStyle: .alert)
+                            let alert = UIAlertController(title: "Success!", message: "Your concern has been noted. If you wish to further contribute, file a complaint on pgportal.gov.in or share it on social media.", preferredStyle: .alert)
                             let action = UIAlertAction(title: "Continue", style: .default) { (action) in
                                 
                             }
@@ -162,8 +162,8 @@ class FileComplaintViewController: UIViewController {
         let storageRef = Storage.storage().reference(withPath: finalString)
         
         let uploadMetadata = StorageMetadata()
-        uploadMetadata.contentType = "image.jpg"
-        let uploadTask = storageRef.putData(data as Data, metadata: nil) { (metadata, error) in
+        uploadMetadata.contentType = "image.jpeg"
+        let uploadTask = storageRef.putData(data as Data, metadata: uploadMetadata) { (metadata, error) in
             
             if (error != nil) {
                 print("I recieved an error", error?.localizedDescription)

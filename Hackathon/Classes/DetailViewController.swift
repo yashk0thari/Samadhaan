@@ -155,7 +155,7 @@ class DetailViewController: UIViewController {
                     print("Error adding document: \(err)")
                 } else {
                     SVProgressHUD.dismiss()
-                    let alert = UIAlertController(title: "Success!", message: "Concern is shown.", preferredStyle: .alert)
+                    let alert = UIAlertController(title: "Concern noted!", message: "Your concern has been noted. If you wish to further contribute, file a complaint on pgportal.gov.in or share it on social media.", preferredStyle: .alert)
                     let action = UIAlertAction(title: "Continue", style: .default) { (action) in
                         
                     }
@@ -209,7 +209,7 @@ class DetailViewController: UIViewController {
                                 print("Error adding document: \(err)")
                             } else {
                                 SVProgressHUD.dismiss()
-                                let alert = UIAlertController(title: "Success!", message: "Concern is shown.", preferredStyle: .alert)
+                                let alert = UIAlertController(title: "Success!", message: "Your concern has been noted. If you wish to further contribute, file a complaint on pgportal.gov.in or share it on social media.", preferredStyle: .alert)
                                 let action = UIAlertAction(title: "Continue", style: .default) { (action) in
                                     
                                 }

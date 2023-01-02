@@ -38,19 +38,19 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Please allow photo usage.</string>
+	<string>Your camera is used for visual evidence of the complaint.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>We need your location to obtain your weather conditions</string>
+	<string>Your location is used to determine the location of the issue. </string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We need your location to obtain your weather conditions</string>
+	<string>Your location is used to determine the location of the issue. </string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>We need access to your microphone</string>
+	<string>Your microphone is used for vocal evidence of the complaint. </string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Please allow photo usage.</string>
+	<string>Your photo library is used for visual evidence of the complaint.</string>
 	<key>UIBackgroundModes</key>
 	<array/>
 	<key>UILaunchStoryboardName</key>
